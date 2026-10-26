@@ -1,10 +1,7 @@
-WH Digital – Meine Aufgaben / GitHub Pages
+WH Digital – Meine Aufgaben v3 (Android-optimiert)
 
-1. Bei github.com anmelden und ein neues PUBLIC Repository erstellen, z.B. wh-digital-aufgaben.
-2. Unter Add file > Upload files die Dateien index.html, sw.js, manifest.webmanifest, icon.svg, icon-192.png, icon-512.png hochladen. Nicht den übergeordneten Ordner hochladen.
-3. Commit changes anklicken.
-4. Settings > Pages > Build and deployment: Source = Deploy from a branch; Branch = main; Folder = /(root); Save.
-5. Nach Bereitstellung die angezeigte Pages-Adresse auf Android in Chrome öffnen.
-6. Chrome-Menü > App installieren oder Zum Startbildschirm hinzufügen.
-
-Wichtig: Repository und Programmcode sind öffentlich; keine privaten Daten dort hochladen. Aufgaben und Fotos liegen nur lokal in IndexedDB des Android-Browsers. Regelmäßig die Sicherung aus der App exportieren. Löschen von Browser-/App-Daten kann alle Aufgaben entfernen. Spracherkennung kann Online-Dienste verwenden. GitHub Pages ist HTTPS; PWA funktioniert nach Erstaufruf offline, soweit Dateien gecacht sind.
+Alle Dateien im Hauptverzeichnis des GitHub-Repositories ersetzen. GitHub Pages: main / (root).
+Nach Veröffentlichung die App in Chrome neu laden. Vor dem Update eine JSON-Sicherung erstellen.
+Die Aufgaben bleiben im lokalen Browserprofil (IndexedDB). Über „Aufgaben als Datei sichern“ eine JSON-Datei herunterladen und im Download-Ordner prüfen.
+Wiederherstellung über „Aufgaben aus Datei wiederherstellen“. Spracheingabe kann einen Onlinedienst benötigen.
+Mobilansicht und Kernfunktionen wurden in Desktop-Chromium mit Android-Viewport emuliert, NICHT auf einem physischen Android-Gerät getestet.
