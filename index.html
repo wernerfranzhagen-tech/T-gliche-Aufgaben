@@ -1,83 +1,304 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="de">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#0057b8">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0f3a6b">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
-<title>WH Digital Todos</title>
+<title>WH Digital – Meine Aufgaben</title>
 <style>
-:root{--blue:#0057b8;--blue-dark:#003d80;--bg:#f2f5f9;--card:#fff;--text:#1a1a1a;--muted:#6b7280;--danger:#d32f2f;--radius:14px}
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-body{font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:96px}
-header{background:var(--card);padding:14px 16px calc(14px);display:flex;align-items:center;gap:12px;border-bottom:1px solid #e2e8f0;position:sticky;top:0;z-index:10}
-header img{height:44px;width:44px;border-radius:10px;object-fit:cover}
-header h1{font-size:18px;color:var(--blue-dark)}
-main{max-width:640px;margin:0 auto;padding:16px}
-h2{font-size:14px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin:8px 2px 10px}
-.stats{font-size:13px;color:var(--muted);margin:-4px 2px 12px}
-ul#liste{list-style:none;display:flex;flex-direction:column;gap:10px}
-li.todo{background:var(--card);border-radius:var(--radius);padding:12px 14px;display:flex;gap:12px;align-items:flex-start;box-shadow:0 1px 3px rgba(0,0,0,.08)}
-li.todo input[type=checkbox]{width:26px;height:26px;flex:none;margin-top:2px;accent-color:var(--blue)}
-.todo-body{flex:1;min-width:0}
-.todo-text{word-break:break-word;white-space:pre-wrap}
-li.done .todo-text{text-decoration:line-through;color:var(--muted)}
-.todo-meta{font-size:12px;color:var(--muted);margin-top:6px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-audio{width:100%;max-width:280px;height:36px;margin-top:6px}
-.thumb{max-width:120px;max-height:120px;border-radius:8px;margin-top:6px}
-.btn-del{border:none;background:none;color:var(--danger);font-size:22px;line-height:1;padding:4px 8px;flex:none}
-.leer{color:var(--muted);text-align:center;padding:32px 0;font-size:15px}
-footer{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid #e2e8f0;padding:12px 16px calc(12px + env(safe-area-inset-bottom))}
-.bar{max-width:640px;margin:0 auto;display:flex;gap:10px;align-items:center}
-#eingabe{flex:1;border:1px solid #d1d5db;border-radius:var(--radius);padding:12px 14px;font-size:16px;background:#fff;color:var(--text)}
-.rund{width:48px;height:48px;border-radius:50%;border:none;background:var(--blue);color:#fff;font-size:22px;display:flex;align-items:center;justify-content:center;flex:none}
-.rund:active{background:var(--blue-dark)}
-.rund.rot{background:var(--danger)}
-.rund.rot:active{background:#9a1b1b}
-#aufnahmeHinweis{display:none;max-width:640px;margin:10px auto 0;font-size:13px;color:var(--danger);text-align:center}
-dialog{border:none;border-radius:16px;padding:20px;max-width:340px;width:90%;text-align:center}
-dialog::backdrop{background:rgba(0,0,0,.5)}
-dialog img{width:100%;border-radius:8px;margin:12px 0}
-dialog .actions{display:flex;gap:10px;margin-top:12px}
-dialog button{flex:1;padding:12px;border-radius:12px;border:none;font-size:15px}
-#dlgOk{background:var(--blue);color:#fff}
-#dlgLoeschen{background:#eee;color:var(--text)}
+:root{
+  --blau:#0f3a6b;--blau-mittel:#1767a7;--akzent:#75d5fa;--gruen:#0e7a5f;
+  --rot:#b3273a;--bg:#eef3f9;--karte:#fff;--linie:#dde7f1;
+  --text:#16283c;--text-muted:#5a6c80;--radius:16px;
+  font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color-scheme:light;
+}
+*{box-sizing:border-box}
+html{font-size:16px;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--text);line-height:1.5;overflow-wrap:anywhere;padding-bottom:env(safe-area-inset-bottom)}
+header{background:linear-gradient(135deg,var(--blau) 0%,#1a5a99 100%);color:#fff;
+  padding:16px max(16px,env(safe-area-inset-right)) 16px max(16px,env(safe-area-inset-left));
+  padding-top:max(16px,env(safe-area-inset-top));display:flex;align-items:center;gap:14px}
+header img{width:58px;height:58px;border-radius:14px;background:#fff;padding:4px;flex:none;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+header h1{font-size:21px;margin:0;letter-spacing:.3px}
+header p{margin:2px 0 0;font-size:14px;opacity:.85}
+main{max-width:680px;margin:0 auto;padding:14px 12px 28px}
+section{background:var(--karte);border:1px solid var(--linie);border-radius:var(--radius);
+  padding:18px 16px;margin:0 0 14px;box-shadow:0 4px 16px rgba(16,36,58,.07)}
+h2{font-size:17px;margin:0 0 12px;display:flex;align-items:center;gap:8px}
+h2 .zahl{background:var(--blau);color:#fff;border-radius:99px;font-size:12px;padding:2px 9px;font-weight:600}
+.muted{color:var(--text-muted);font-size:14px}
+textarea{width:100%;padding:13px;border:1px solid #b7c6d6;border-radius:12px;min-height:92px;
+  resize:vertical;font-size:16px;color:var(--text);background:#fff;font-family:inherit}
+textarea:focus-visible,button:focus-visible,label.datei:focus-within{outline:3px solid var(--akzent);outline-offset:2px}
+.aktionszeile{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:12px}
+button,label.datei{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:50px;
+  border:0;border-radius:12px;padding:12px 10px;font-weight:600;font-size:15px;cursor:pointer;
+  touch-action:manipulation;font-family:inherit}
+button{background:var(--blau-mittel);color:#fff}
+button.gruen{background:var(--gruen)}
+button.hell,label.datei{background:#e8f0f8;color:#0f3a6b}
+button.rot{background:var(--rot)}
+button.voll{width:100%}
+button:disabled{opacity:.5}
+button:active,label.datei:active{transform:scale(.98)}
+input[type=file]{display:none}
+#fotoVorschauWrap{display:none;margin-top:12px;position:relative}
+#fotoVorschauWrap img{display:block;width:100%;max-height:220px;object-fit:cover;border-radius:12px}
+#fotoEntfernen{position:absolute;top:8px;right:8px;background:rgba(0,0,0,.65);border-radius:99px;
+  min-height:0;padding:8px 12px;font-size:13px}
+.status{font-size:14px;margin-top:10px;min-height:20px}
+#recHinweis{display:none;align-items:center;gap:10px;background:#fdecec;border:1px solid #f5c2c8;
+  color:#8c1f30;padding:11px 13px;border-radius:12px;font-size:15px;margin-top:12px}
+.punkt{width:11px;height:11px;background:var(--rot);border-radius:50%;animation:blink 1s infinite;flex:none}
+@keyframes blink{50%{opacity:.25}}
+.task{background:#f7fafc;border:1px solid var(--linie);border-radius:13px;padding:13px;margin:10px 0}
+.task .kopf{display:flex;gap:12px;align-items:flex-start}
+.task input[type=checkbox]{width:26px;height:26px;margin:2px 0 0;accent-color:var(--gruen);flex:none}
+.task .inhalt{flex:1;min-width:0}
+.task .text{white-space:pre-wrap;font-weight:500}
+.task.erledigt .text{text-decoration:line-through;color:var(--text-muted)}
+.task img.vorschau{display:block;width:100%;max-height:240px;object-fit:cover;border-radius:10px;margin-top:10px}
+.task .meta{font-size:12.5px;color:var(--text-muted);margin-top:7px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.task .meta .badge{background:#e8f0f8;color:#0f3a6b;border-radius:99px;padding:2px 9px;font-weight:600;font-size:11.5px}
+.task .buttons{display:flex;gap:8px;margin-top:12px}
+.task .buttons button{flex:1;min-height:42px;font-size:14px;padding:8px}
+.leer{color:var(--text-muted);font-size:14.5px;padding:6px 2px}
+#backupStatus{font-size:15px;font-weight:600;color:#0f3a6b;margin:8px 0 12px}
+.sicherungszeile{display:flex;flex-direction:column;gap:9px}
+@media(min-width:540px){
+  main{padding:22px 20px}
+  .sicherungszeile{flex-direction:row}
+  .sicherungszeile button,.sicherungszeile label{flex:1;width:auto;margin:0}
+}
+@media(max-width:360px){main{padding:10px}section{padding:15px 12px}}
+@media(prefers-reduced-motion:no-preference){button,label.datei{transition:transform .08s}}
 </style>
 </head>
 <body>
 <header>
-  <img src="icons/icon-192.png" alt="WH Digital Logo">
-  <h1>WH Digital<br><span style="font-size:13px;font-weight:400">Todos</span></h1>
+  <img src="icons/logo.png" alt="WH Digital Logo">
+  <div>
+    <h1>WH Digital</h1>
+    <p>Meine Aufgaben</p>
+  </div>
 </header>
 <main>
-  <h2>Offene Aufgaben</h2>
-  <p class="stats" id="stats"></p>
-  <ul id="liste"></ul>
-  <p class="leer" id="leer" hidden>Keine Aufgaben. Füge unten eine hinzu – durch Tippen, Sprechen oder Foto.</p>
-  <h2 style="margin-top:24px" id="fertigUeberschrift" hidden>Erledigt</h2>
-  <ul id="listeFertig"></ul>
+
+<section aria-label="Neue Aufgabe">
+  <h2>➕ Neue Aufgabe</h2>
+  <textarea id="eingabe" placeholder="Was ist zu erledigen?"></textarea>
+  <div class="aktionszeile">
+    <button id="btnSprache" type="button">🎤 Diktieren</button>
+    <label class="datei" for="fotoInput">📷 Foto</label>
+    <input id="fotoInput" type="file" accept="image/*" capture="environment">
+    <button id="btnSpeichern" class="gruen" type="button">✓ Speichern</button>
+  </div>
+  <div id="recHinweis" role="status"><span class="punkt"></span><span id="recText">Aufnahme läuft – jetzt sprechen …</span></div>
+  <div id="fotoVorschauWrap"><img id="fotoVorschau" alt="Foto-Vorschau"><button id="fotoEntfernen" type="button">✕ entfernen</button></div>
+  <p class="status" id="status" role="status"></p>
+</section>
+
+<section aria-label="Offene Aufgaben">
+  <h2>📋 Offen <span class="zahl" id="anzahlOffen">0</span></h2>
+  <div id="offen"></div>
+</section>
+
+<section aria-label="Erledigte Aufgaben">
+  <h2>✅ Erledigt <span class="zahl" id="anzahlErledigt">0</span></h2>
+  <div id="erledigt"></div>
+  <button class="rot voll" id="alleErledigtLoeschen" type="button" style="margin-top:8px">🗑️ Alle erledigten löschen</button>
+</section>
+
+<section aria-label="Datensicherung">
+  <h2>💾 Datensicherung als Datei</h2>
+  <p class="muted">Sichere alle Aufgaben und Fotos in einer JSON-Datei auf deinem Handy.
+  Diese Datei bleibt erhalten, auch wenn du die Browserdaten löschst.</p>
+  <p id="backupStatus" role="status">Noch keine Sicherung erstellt.</p>
+  <div class="sicherungszeile">
+    <button class="hell" id="exportieren" type="button">⬇️ Aufgaben als Datei sichern</button>
+    <label class="datei" for="importInput">⬆️ Aus Datei wiederherstellen</label>
+    <input id="importInput" type="file" accept="application/json,.json">
+  </div>
+  <p class="muted" style="margin-top:12px">Die App speichert lokal auf deinem Smartphone. Nach Änderungen bitte erneut sichern.</p>
+</section>
+
 </main>
-<footer>
-  <div class="bar">
-    <input id="eingabe" type="text" placeholder="Aufgabe tippen…" enterkeyhint="done" autocomplete="off">
-    <button class="rund" id="btnFoto" title="Foto" aria-label="Foto aufnehmen">📷</button>
-    <button class="rund" id="btnSpeech" title="Diktieren" aria-label="Aufnahme starten">🎙️</button>
-    <button class="rund" id="btnAdd" title="Hinzufügen" aria-label="Aufgabe hinzufügen">＋</button>
-  </div>
-  <p id="aufnahmeHinweis"></p>
-</footer>
-<dialog id="fotoDialog">
-  <strong>Foto aufnehmen</strong>
-  <input type="file" id="fotoInput" accept="image/*" capture="environment" style="margin-top:12px">
-  <img id="fotoVorschau" alt="" hidden>
-  <input type="text" id="fotoText" placeholder="Beschreibung (optional)" style="width:100%;margin-top:10px;padding:10px;border:1px solid #d1d5db;border-radius:10px;font-size:16px">
-  <div class="actions">
-    <button id="dlgLoeschen">Verwerfen</button>
-    <button id="dlgOk">Speichern</button>
-  </div>
-</dialog>
-<script src="app.js"></script>
+<script>
+'use strict';
+const $=id=>document.getElementById(id);
+
+let db=null,fotoNeu=null;
+
+/* ============ Speicher: IndexedDB ============ */
+function dbOeffnen(){return new Promise((res,rej)=>{
+  const req=indexedDB.open('wh-digital-todos',1);
+  req.onupgradeneeded=()=>req.result.createObjectStore('aufgaben',{keyPath:'id'});
+  req.onsuccess=()=>res(req.result);req.onerror=()=>rej(req.error);
+})}
+function alleHolen(){return new Promise((res,rej)=>{
+  const r=db.transaction('aufgaben').objectStore('aufgaben').getAll();
+  r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error);
+})}
+function speichernTask(t){return new Promise((res,rej)=>{
+  const r=db.transaction('aufgaben','readwrite').objectStore('aufgaben').put(t);
+  r.onsuccess=()=>{aenderungMarkieren();res()};r.onerror=()=>rej(r.error);
+})}
+function loeschenTask(id){return new Promise((res,rej)=>{
+  const r=db.transaction('aufgaben','readwrite').objectStore('aufgaben').delete(id);
+  r.onsuccess=()=>{aenderungMarkieren();res()};r.onerror=()=>rej(r.error);
+})}
+
+/* ============ Sicherungs-Status ============ */
+function aenderungMarkieren(){try{localStorage.setItem('wh_backup_dirty','1')}catch(e){}backupStatusAktualisieren()}
+function backupStatusAktualisieren(){
+  let datum=null,schmutzig=false;
+  try{datum=localStorage.getItem('wh_backup_date');schmutzig=localStorage.getItem('wh_backup_dirty')==='1'}catch(e){}
+  $('backupStatus').textContent=datum
+    ?('Letzte Sicherung: '+new Date(datum).toLocaleString('de-DE')+(schmutzig?' · ⚠️ Änderungen noch nicht gesichert':' · ✓ aktuell'))
+    :'Noch keine Sicherung erstellt – bitte Aufgaben als Datei sichern.';
+}
+
+/* ============ Foto ============ */
+function fotoKomprimieren(datei){return new Promise((res,rej)=>{
+  const img=new Image(),url=URL.createObjectURL(datei);
+  img.onload=()=>{
+    const ratio=Math.min(1,1200/Math.max(img.width,img.height));
+    const c=document.createElement('canvas');
+    c.width=Math.round(img.width*ratio);c.height=Math.round(img.height*ratio);
+    c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+    URL.revokeObjectURL(url);res(c.toDataURL('image/jpeg',.75));
+  };
+  img.onerror=()=>{URL.revokeObjectURL(url);rej(Error('Bild konnte nicht geladen werden'))};
+  img.src=url;
+})}
+$('fotoInput').onchange=async e=>{
+  const f=e.target.files[0];if(!f)return;
+  try{
+    fotoNeu=await fotoKomprimieren(f);
+    $('fotoVorschau').src=fotoNeu;$('fotoVorschauWrap').style.display='block';
+    setStatus('Foto ausgewählt – jetzt speichern.');
+  }catch(err){setStatus('Fehler: '+err.message)}
+  e.target.value='';
+};
+$('fotoEntfernen').onclick=()=>{fotoNeu=null;$('fotoVorschauWrap').style.display='none';setStatus('')};
+
+/* ============ Spracheingabe ============ */
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+if(!SR){$('btnSprache').disabled=true;$('btnSprache').textContent='🎤 nicht verfügbar'}
+$('btnSprache').onclick=()=>{
+  if(!SR)return;
+  const rec=new SR();rec.lang='de-DE';rec.interimResults=true;rec.continuous=false;
+  let finale='';
+  $('recHinweis').style.display='flex';
+  rec.onresult=e=>{let vorlaeufig='';
+    for(let i=e.resultIndex;i<e.results.length;i++){
+      if(e.results[i].isFinal)finale+=e.results[i][0].transcript;
+      else vorlaeufig+=e.results[i][0].transcript;
+    }
+    $('eingabe').value=(finale+vorlaeufig).trim();
+  };
+  rec.onerror=e=>{$('recHinweis').style.display='none';setStatus('Spracherkennung: '+e.error+'. Tipp: Mikrofon der Tastatur nutzen.')};
+  rec.onend=()=>{$('recHinweis').style.display='none';
+    if($('eingabe').value.trim())setStatus('Sprache erkannt – prüfen und speichern.')};
+  rec.start();
+};
+
+/* ============ Speichern ============ */
+$('btnSpeichern').onclick=async()=>{
+  const text=$('eingabe').value.trim();
+  if(!text&&!fotoNeu){setStatus('Bitte Text eingeben oder Foto auswählen.');return}
+  try{
+    await speichernTask({id:crypto.randomUUID(),text,foto:fotoNeu,done:false,created:Date.now()});
+    $('eingabe').value='';fotoNeu=null;$('fotoVorschauWrap').style.display='none';
+    setStatus('✓ Aufgabe gespeichert');render();
+  }catch(e){setStatus('Speichern fehlgeschlagen – Speicherplatz prüfen.')}
+};
+
+/* ============ Darstellung ============ */
+function datumFormat(ts){return new Date(ts).toLocaleString('de-DE',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'})}
+function taskElement(t){
+  const el=document.createElement('div');el.className='task'+(t.done?' erledigt':'');
+  const kopf=document.createElement('div');kopf.className='kopf';
+  const cb=document.createElement('input');cb.type='checkbox';cb.checked=!!t.done;
+  cb.setAttribute('aria-label','Als erledigt markieren');
+  cb.onchange=async()=>{t.done=cb.checked;await speichernTask(t);render()};
+  const inhalt=document.createElement('div');inhalt.className='inhalt';
+  const text=document.createElement('div');text.className='text';text.textContent=t.text||'(Foto-Aufgabe)';
+  inhalt.appendChild(text);
+  if(t.foto){const img=document.createElement('img');img.src=t.foto;img.className='vorschau';img.alt='Foto zur Aufgabe';inhalt.appendChild(img)}
+  const meta=document.createElement('div');meta.className='meta';
+  const zeit=document.createElement('span');zeit.textContent=datumFormat(t.created);
+  meta.appendChild(zeit);
+  if(t.foto){const b=document.createElement('span');b.className='badge';b.textContent='📷 Foto';meta.appendChild(b)}
+  inhalt.appendChild(meta);
+  kopf.append(cb,inhalt);el.appendChild(kopf);
+  const buttons=document.createElement('div');buttons.className='buttons';
+  const toggle=document.createElement('button');toggle.className='hell';
+  toggle.textContent=t.done?'↩️ Wieder öffnen':'✓ Erledigt';
+  toggle.onclick=async()=>{t.done=!t.done;await speichernTask(t);render()};
+  buttons.appendChild(toggle);
+  const del=document.createElement('button');del.className='rot';del.textContent='🗑️ Löschen';
+  del.onclick=async()=>{if(confirm('Aufgabe endgültig löschen?')){await loeschenTask(t.id);render()}};
+  buttons.appendChild(del);
+  el.appendChild(buttons);
+  return el;
+}
+async function render(){
+  const tasks=(await alleHolen()).sort((a,b)=>b.created-a.created);
+  for(const [rootId,counterId,done,leerText] of [
+    ['offen','anzahlOffen',false,'Keine offenen Aufgaben – alles erledigt! 🎉'],
+    ['erledigt','anzahlErledigt',true,'Noch keine erledigten Aufgaben.']]){
+    const items=tasks.filter(t=>t.done===done),root=$(rootId);
+    $(counterId).textContent=items.length;
+    root.replaceChildren();
+    if(!items.length){const p=document.createElement('p');p.className='leer';p.textContent=leerText;root.appendChild(p)}
+    else for(const t of items)root.appendChild(taskElement(t));
+  }
+  $('alleErledigtLoeschen').disabled=tasks.filter(t=>t.done).length===0;
+}
+function setStatus(s){$('status').textContent=s}
+
+/* ============ Erledigte bereinigen ============ */
+$('alleErledigtLoeschen').onclick=async()=>{
+  const fertig=(await alleHolen()).filter(t=>t.done);
+  if(fertig.length&&confirm(fertig.length+' erledigte Aufgabe(n) endgültig löschen?')){
+    for(const t of fertig)await loeschenTask(t.id);render();
+  }
+};
+
+/* ============ Export / Import ============ */
+$('exportieren').onclick=async()=>{
+  const data=JSON.stringify({app:'wh-digital-todos',version:2,exportiert:new Date().toISOString(),tasks:await alleHolen()});
+  const url=URL.createObjectURL(new Blob([data],{type:'application/json'}));
+  const a=document.createElement('a');a.href=url;
+  a.download='wh-digital-aufgaben-'+new Date().toISOString().slice(0,10)+'.json';
+  a.click();
+  try{localStorage.setItem('wh_backup_date',new Date().toISOString());localStorage.setItem('wh_backup_dirty','0')}catch(e){}
+  backupStatusAktualisieren();
+  setStatus('⬇️ Sicherung wird heruntergeladen – prüfe den Download-Ordner.');
+  setTimeout(()=>URL.revokeObjectURL(url),60000);
+};
+$('importInput').onchange=async e=>{
+  try{
+    const data=JSON.parse(await e.target.files[0].text());
+    if(data.app!=='wh-digital-todos'||!Array.isArray(data.tasks)
+      ||!data.tasks.every(t=>typeof t.id==='string'&&typeof t.text==='string'&&typeof t.done==='boolean'&&(!t.foto||typeof t.foto==='string')))
+      throw Error('Ungültige Sicherungsdatei');
+    if(confirm(data.tasks.length+' Aufgaben importieren? Vorhandene bleiben erhalten.')){
+      for(const t of data.tasks)await speichernTask(t);render();
+      setStatus('✓ Aufgaben wiederhergestellt');
+    }
+  }catch(err){setStatus('Import fehlgeschlagen: '+err.message)}
+  e.target.value='';
+};
+
+/* ============ Start ============ */
+dbOeffnen().then(d=>{db=d;render()}).catch(()=>setStatus('Lokaler Speicher nicht verfügbar.'));
+backupStatusAktualisieren();
+if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});
+</script>
 </body>
 </html>
