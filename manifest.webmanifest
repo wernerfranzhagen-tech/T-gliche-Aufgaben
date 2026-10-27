@@ -1,22 +1,17 @@
 {
-  "name": "WH Digital – Meine Aufgaben",
-  "short_name": "WH Aufgaben",
-  "start_url": "./index.html",
+  "name": "WH Digital Todos",
+  "short_name": "WH Todos",
+  "description": "Einfache Todo-App: tippen, sprechen oder Foto. Daten bleiben lokal auf dem Gerät.",
+  "lang": "de",
+  "start_url": ".",
+  "scope": ".",
   "display": "standalone",
-  "background_color": "#f3f6fa",
-  "theme_color": "#123b62",
+  "orientation": "portrait",
+  "background_color": "#f2f5f9",
+  "theme_color": "#0057b8",
   "icons": [
-    {
-      "src": "icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
-    }
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
   ]
 }
