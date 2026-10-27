@@ -1,7 +1,0 @@
-WH Digital – Meine Aufgaben v3 (Android-optimiert)
-
-Alle Dateien im Hauptverzeichnis des GitHub-Repositories ersetzen. GitHub Pages: main / (root).
-Nach Veröffentlichung die App in Chrome neu laden. Vor dem Update eine JSON-Sicherung erstellen.
-Die Aufgaben bleiben im lokalen Browserprofil (IndexedDB). Über „Aufgaben als Datei sichern“ eine JSON-Datei herunterladen und im Download-Ordner prüfen.
-Wiederherstellung über „Aufgaben aus Datei wiederherstellen“. Spracheingabe kann einen Onlinedienst benötigen.
-Mobilansicht und Kernfunktionen wurden in Desktop-Chromium mit Android-Viewport emuliert, NICHT auf einem physischen Android-Gerät getestet.

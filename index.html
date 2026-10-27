@@ -1,5 +1,83 @@
-<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#123b62"><link rel="manifest" href="manifest.webmanifest"><title>WH Digital – Meine Aufgaben</title><style>
-:root{font-family:system-ui,-apple-system,Roboto,Arial,sans-serif;color-scheme:light}*{box-sizing:border-box}html{font-size:16px;-webkit-text-size-adjust:100%}body{margin:0;background:#f3f6fa;color:#172b40;font-size:16px;line-height:1.45;overflow-wrap:anywhere}header{background:#123b62;color:#fff;padding:18px max(16px,env(safe-area-inset-right)) 18px max(16px,env(safe-area-inset-left));padding-top:max(18px,env(safe-area-inset-top));}header b{font-size:23px;letter-spacing:.1px}header div{font-size:15px;opacity:.92}main{width:100%;max-width:680px;margin:0 auto;padding:12px 12px max(28px,env(safe-area-inset-bottom))}section{background:#fff;border:1px solid #e6edf3;border-radius:17px;padding:18px 16px;margin:0 0 13px;box-shadow:0 3px 12px #10243a0b}h2{font-size:20px;line-height:1.25;margin:0 0 15px}p{margin:10px 0 14px}button,input,textarea{font:inherit}textarea{display:block;width:100%;padding:13px;border:1px solid #aab9c9;border-radius:11px;min-height:110px;resize:vertical;font-size:16px;color:#172b40;background:#fff}textarea:focus-visible,button:focus-visible,label.file:focus-within{outline:3px solid #75d5fa;outline-offset:2px}button,label.file{display:inline-flex;align-items:center;justify-content:center;text-align:center;min-height:48px;border:0;border-radius:11px;padding:12px 14px;font-weight:600;line-height:1.25;cursor:pointer;touch-action:manipulation}button{background:#1767a7;color:white}button.secondary,label.file{background:#e5edf5;color:#173c5d}button.danger{background:#a52c38;color:#fff}button:disabled{opacity:.55}.actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:12px}.actions button,.actions label{width:100%;margin:0}.actions #save{grid-column:1/-1;background:#126c54}.task{background:#f8fafc;border:1px solid #e2eaf2;border-radius:12px;padding:13px;margin:10px 0}.task .body{white-space:pre-wrap;font-weight:500;line-height:1.45}.task.done .body{text-decoration:line-through;color:#526479}.task .actions{display:flex;flex-wrap:wrap}.task .actions button{width:auto;flex:1}.task img.preview{display:block;max-width:100%;max-height:250px;object-fit:contain;border-radius:9px;margin-top:10px}.muted{color:#526579;font-size:14px;line-height:1.5}#status{font-size:14px;color:#274762;margin-top:8px}input[type=file]{display:none}#clearDone{width:100%;margin-top:8px}#export,label[for=import]{display:flex;width:100%;margin:10px 0;white-space:normal}#backupState{font-size:15px;line-height:1.5} @media(min-width:540px){main{padding:20px}section{padding:22px 24px}header{padding-left:max(24px,env(safe-area-inset-left))}.actions{grid-template-columns:repeat(3,minmax(0,1fr))}.actions #save{grid-column:auto}}@media(max-width:360px){main{padding:9px}section{padding:15px 12px}button,label.file{padding:11px 9px;font-size:15px}}@media(prefers-reduced-motion:no-preference){button:active,label.file:active{transform:scale(.985)}}
-</style></head><body><header><b>WH <span style="color:#75d5fa">digital</span></b><div>Meine Aufgaben</div></header><main><section><h2>Neue Aufgabe</h2><textarea id="entry" placeholder="Was ist zu erledigen?"></textarea><div class="actions"><button id="voice">🎤 Sprechen</button><label class="file" for="photo">📷 Foto</label><input id="photo" type="file" accept="image/*" capture="environment"><button id="save">＋ Speichern</button></div><div id="photoInfo" class="muted" role="status"></div><div id="status" role="status"></div></section><section><h2>Offen (<span id="openCount">0</span>)</h2><div id="open"></div></section><section><h2>Erledigt (<span id="doneCount">0</span>)</h2><div id="done"></div><button class="danger" id="clearDone">Erledigte löschen</button></section><section><h2>Datensicherung als Datei</h2><p class="muted">Sichere alle Aufgaben und Fotos in einer JSON-Datei auf deinem Handy. Diese Datei bleibt auch erhalten, wenn du Browserdaten löschst, sofern du die heruntergeladene Datei nicht selbst löschst.</p><p id="backupState" role="status" style="font-weight:600;color:#173c5d">Noch keine Sicherung in dieser App registriert.</p><button id="export" class="secondary">⬇ Aufgaben als Datei sichern</button><label class="file" for="import">⬆ Aufgaben aus Datei wiederherstellen</label><input id="import" type="file" accept="application/json,.json"><p class="muted">Die App speichert weiterhin lokal im Browser. Nach Änderungen bitte erneut eine Sicherungsdatei erstellen. Prüfe die Datei im Download-Ordner. Eine alte Sicherung enthält keine späteren Änderungen.</p></section></main><script>
-const $=id=>document.getElementById(id);let db,pending=null;const req=indexedDB.open('wh-digital-todos',1);req.onupgradeneeded=()=>req.result.createObjectStore('tasks',{keyPath:'id'});req.onsuccess=()=>{db=req.result;render()};req.onerror=()=>alert('Lokaler Speicher nicht verfügbar.');function markChanged(){try{localStorage.setItem('wh_backup_dirty','1')}catch(e){} updateBackupState()}function updateBackupState(){let el=$('backupState');let date;try{date=localStorage.getItem('wh_backup_date')}catch(e){}let dirty;try{dirty=localStorage.getItem('wh_backup_dirty')==='1'}catch(e){}el.textContent=date?('Letzte Sicherung: '+new Date(date).toLocaleString('de-DE')+(dirty?' · Änderungen noch nicht gesichert':' · Seitdem keine Änderungen')):'Noch keine Sicherung erstellt – bitte Aufgaben als Datei sichern.'} updateBackupState();function store(mode='readonly'){return db.transaction('tasks',mode).objectStore('tasks')}function all(){return new Promise((resolve,reject)=>{let r=store().getAll();r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error)})}function put(t){return new Promise((resolve,reject)=>{let r=store('readwrite').put(t);r.onsuccess=()=>{markChanged();resolve()};r.onerror=()=>reject(r.error)})}function del(id){return new Promise((resolve,reject)=>{let r=store('readwrite').delete(id);r.onsuccess=()=>{markChanged();resolve()};r.onerror=()=>reject(r.error)})}function compress(file){return new Promise((resolve,reject)=>{let im=new Image(),url=URL.createObjectURL(file);im.onload=()=>{let ratio=Math.min(1,1200/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*ratio);c.height=Math.round(im.height*ratio);c.getContext('2d').drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(url);resolve(c.toDataURL('image/jpeg',.75))};im.onerror=()=>reject(Error('Bild konnte nicht geladen werden'));im.src=url})} $('photo').onchange=async e=>{try{let f=e.target.files[0];if(f){pending=await compress(f);$('photoInfo').textContent='Foto ausgewählt: '+f.name}}catch(err){alert(err.message)}};$('save').onclick=async()=>{if(!db)return;let text=$('entry').value.trim();if(!text&&!pending)return alert('Bitte Text oder Foto hinzufügen.');try{await put({id:crypto.randomUUID(),text,photo:pending,done:false,created:Date.now()});$('entry').value='';$('photo').value='';$('photoInfo').textContent='';pending=null;render()}catch(e){alert('Speichern fehlgeschlagen: Speicherplatz prüfen.')}};async function render(){let tasks=(await all()).sort((a,b)=>b.created-a.created);for(let [name,done] of [['open',false],['done',true]]){let items=tasks.filter(t=>t.done===done),root=$(name);root.replaceChildren();$(name+'Count').textContent=items.length;if(!items.length){let p=document.createElement('p');p.className='muted';p.textContent=done?'Noch keine erledigten Aufgaben.':'Keine offenen Aufgaben.';root.append(p)}for(let t of items){let el=document.createElement('div');el.className='task'+(done?' done':'');let body=document.createElement('div');body.className='body';body.textContent=t.text||'Foto-Aufgabe';el.append(body);if(t.photo){let img=document.createElement('img');img.src=t.photo;img.className='preview';img.alt='Foto zur Aufgabe';el.append(img)}let actions=document.createElement('div');actions.className='actions';let toggle=document.createElement('button');toggle.textContent=done?'↩ Wieder öffnen':'✓ Erledigt';toggle.onclick=async()=>{t.done=!t.done;await put(t);render()};actions.append(toggle);if(done){let remove=document.createElement('button');remove.className='danger';remove.textContent='Löschen';remove.onclick=async()=>{if(confirm('Aufgabe endgültig löschen?')){await del(t.id);render()}};actions.append(remove)}el.append(actions);root.append(el)}}}$('clearDone').onclick=async()=>{let tasks=(await all()).filter(t=>t.done);if(tasks.length&&confirm(tasks.length+' erledigte Aufgaben endgültig löschen?')){for(let t of tasks)await del(t.id);render()}};$('export').onclick=async()=>{let data=JSON.stringify({app:'wh-digital-todos',version:1,tasks:await all()}),url=URL.createObjectURL(new Blob([data],{type:'application/json'})),a=document.createElement('a');a.href=url;a.download='wh-digital-aufgaben-'+new Date().toISOString().slice(0,10)+'.json';a.click();try{localStorage.setItem('wh_backup_date',new Date().toISOString());localStorage.setItem('wh_backup_dirty','0')}catch(e){}updateBackupState();setTimeout(()=>URL.revokeObjectURL(url),60000);alert('Sicherung wurde zum Download angeboten. Bitte prüfe im Download-Ordner, ob die JSON-Datei tatsächlich gespeichert wurde.')};$('import').onchange=async e=>{try{let data=JSON.parse(await e.target.files[0].text());if(data.app!=='wh-digital-todos'||!Array.isArray(data.tasks)||!data.tasks.every(t=>typeof t.id==='string'&&typeof t.text==='string'&&typeof t.done==='boolean'&&(!t.photo||typeof t.photo==='string')))throw Error('Ungültige Sicherungsdatei');if(confirm(data.tasks.length+' Aufgaben importieren? Vorhandene Aufgaben bleiben erhalten.')){for(let t of data.tasks)await put(t);render()}}catch(err){alert('Import fehlgeschlagen: '+err.message)}e.target.value=''};let SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){$('voice').onclick=()=>alert('Spracherkennung hier nicht verfügbar. Nutze das Mikrofon der Android-Tastatur.')}else{$('voice').onclick=()=>{let r=new SR();r.lang='de-DE';r.interimResults=false;$('status').textContent='Bitte jetzt sprechen …';r.onresult=e=>{$('entry').value+=($('entry').value?' ':'')+e.results[0][0].transcript;$('status').textContent='Sprache erkannt.'};r.onerror=()=>{$('status').textContent='Spracherkennung fehlgeschlagen. Alternativ Tastaturmikrofon nutzen.'};r.onend=()=>{if($('status').textContent==='Bitte jetzt sprechen …')$('status').textContent='Aufnahme beendet.'};r.start()}}if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});
-</script></body></html>
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0057b8">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<title>WH Digital Todos</title>
+<style>
+:root{--blue:#0057b8;--blue-dark:#003d80;--bg:#f2f5f9;--card:#fff;--text:#1a1a1a;--muted:#6b7280;--danger:#d32f2f;--radius:14px}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:96px}
+header{background:var(--card);padding:14px 16px calc(14px);display:flex;align-items:center;gap:12px;border-bottom:1px solid #e2e8f0;position:sticky;top:0;z-index:10}
+header img{height:44px;width:44px;border-radius:10px;object-fit:cover}
+header h1{font-size:18px;color:var(--blue-dark)}
+main{max-width:640px;margin:0 auto;padding:16px}
+h2{font-size:14px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin:8px 2px 10px}
+.stats{font-size:13px;color:var(--muted);margin:-4px 2px 12px}
+ul#liste{list-style:none;display:flex;flex-direction:column;gap:10px}
+li.todo{background:var(--card);border-radius:var(--radius);padding:12px 14px;display:flex;gap:12px;align-items:flex-start;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+li.todo input[type=checkbox]{width:26px;height:26px;flex:none;margin-top:2px;accent-color:var(--blue)}
+.todo-body{flex:1;min-width:0}
+.todo-text{word-break:break-word;white-space:pre-wrap}
+li.done .todo-text{text-decoration:line-through;color:var(--muted)}
+.todo-meta{font-size:12px;color:var(--muted);margin-top:6px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+audio{width:100%;max-width:280px;height:36px;margin-top:6px}
+.thumb{max-width:120px;max-height:120px;border-radius:8px;margin-top:6px}
+.btn-del{border:none;background:none;color:var(--danger);font-size:22px;line-height:1;padding:4px 8px;flex:none}
+.leer{color:var(--muted);text-align:center;padding:32px 0;font-size:15px}
+footer{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid #e2e8f0;padding:12px 16px calc(12px + env(safe-area-inset-bottom))}
+.bar{max-width:640px;margin:0 auto;display:flex;gap:10px;align-items:center}
+#eingabe{flex:1;border:1px solid #d1d5db;border-radius:var(--radius);padding:12px 14px;font-size:16px;background:#fff;color:var(--text)}
+.rund{width:48px;height:48px;border-radius:50%;border:none;background:var(--blue);color:#fff;font-size:22px;display:flex;align-items:center;justify-content:center;flex:none}
+.rund:active{background:var(--blue-dark)}
+.rund.rot{background:var(--danger)}
+.rund.rot:active{background:#9a1b1b}
+#aufnahmeHinweis{display:none;max-width:640px;margin:10px auto 0;font-size:13px;color:var(--danger);text-align:center}
+dialog{border:none;border-radius:16px;padding:20px;max-width:340px;width:90%;text-align:center}
+dialog::backdrop{background:rgba(0,0,0,.5)}
+dialog img{width:100%;border-radius:8px;margin:12px 0}
+dialog .actions{display:flex;gap:10px;margin-top:12px}
+dialog button{flex:1;padding:12px;border-radius:12px;border:none;font-size:15px}
+#dlgOk{background:var(--blue);color:#fff}
+#dlgLoeschen{background:#eee;color:var(--text)}
+</style>
+</head>
+<body>
+<header>
+  <img src="icons/icon-192.png" alt="WH Digital Logo">
+  <h1>WH Digital<br><span style="font-size:13px;font-weight:400">Todos</span></h1>
+</header>
+<main>
+  <h2>Offene Aufgaben</h2>
+  <p class="stats" id="stats"></p>
+  <ul id="liste"></ul>
+  <p class="leer" id="leer" hidden>Keine Aufgaben. Füge unten eine hinzu – durch Tippen, Sprechen oder Foto.</p>
+  <h2 style="margin-top:24px" id="fertigUeberschrift" hidden>Erledigt</h2>
+  <ul id="listeFertig"></ul>
+</main>
+<footer>
+  <div class="bar">
+    <input id="eingabe" type="text" placeholder="Aufgabe tippen…" enterkeyhint="done" autocomplete="off">
+    <button class="rund" id="btnFoto" title="Foto" aria-label="Foto aufnehmen">📷</button>
+    <button class="rund" id="btnSpeech" title="Diktieren" aria-label="Aufnahme starten">🎙️</button>
+    <button class="rund" id="btnAdd" title="Hinzufügen" aria-label="Aufgabe hinzufügen">＋</button>
+  </div>
+  <p id="aufnahmeHinweis"></p>
+</footer>
+<dialog id="fotoDialog">
+  <strong>Foto aufnehmen</strong>
+  <input type="file" id="fotoInput" accept="image/*" capture="environment" style="margin-top:12px">
+  <img id="fotoVorschau" alt="" hidden>
+  <input type="text" id="fotoText" placeholder="Beschreibung (optional)" style="width:100%;margin-top:10px;padding:10px;border:1px solid #d1d5db;border-radius:10px;font-size:16px">
+  <div class="actions">
+    <button id="dlgLoeschen">Verwerfen</button>
+    <button id="dlgOk">Speichern</button>
+  </div>
+</dialog>
+<script src="app.js"></script>
+</body>
+</html>
